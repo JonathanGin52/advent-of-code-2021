@@ -5,12 +5,21 @@ class Board
     @numbers = []
     board.split("\n").each { |line| @numbers << line.split.map(&:to_i) }
     @numbers.flatten!
+    @won = false
   end
 
   def won?
+    return true if @won
+
     slices = @numbers.each_slice(5)
-    return true if slices.any? { |row| row.all?(&:negative?) }
-    return true if (0...5).map { |i| slices.map { |s| s[i] } }.any? { |column| column.all?(&:negative?) }
+    if slices.any? { |row| row.all?(&:negative?) }
+      @won = true
+      return true
+    end
+    if (0..4).map { |i| slices.map { |s| s[i] } }.any? { |column| column.all?(&:negative?) }
+      @won = true
+      return true
+    end
 
     false
   end
@@ -39,11 +48,9 @@ boards = data.map { |b| Board.new(b) }
 
 numbers.each do |number|
   boards.each do |board|
-    board.mark(number)
+    next if board.won?
 
-    if board.won?
-      puts board.score(number)
-      exit
-    end
+    board.mark(number)
+    puts board.score(number) if board.won?
   end
 end
