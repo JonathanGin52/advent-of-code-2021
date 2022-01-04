@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 data = File.read('input.txt').split(',').map(&:to_i)
-days = 80
+days = 256
 
 fish = Array.new(9, 0)
 data.each { |timer| fish[timer] += 1 }
